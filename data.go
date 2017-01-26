@@ -6,6 +6,8 @@ type Data struct {
 	eurUSD    chan float64
 	activeBTC chan int
 	activeCUR chan int
+	totalBTC  int
+	totalCUR  int
 }
 
 func NewData() *Data {

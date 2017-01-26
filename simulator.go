@@ -23,15 +23,15 @@ func DataSimulator(data *Data, quit chan int) {
 			magicNum := rand.Float64()
 			data.eurUSD <- magicNum
 		case 4:
-			magicNum := rand.Intn(len(BitcoinSources))
+			magicNum := rand.Intn(5)
 			data.activeBTC <- magicNum
 		case 5:
-			magicNum := rand.Intn(len(CurrencySources))
+			magicNum := rand.Intn(5)
 			data.activeCUR <- magicNum
 		}
 
 		time.Sleep(1 * time.Second)
 	}
 
-	quit <- 0
+	// quit <- 0
 }
