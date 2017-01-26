@@ -24,9 +24,9 @@ func (s BlockchainSource) GetEUR() float64 {
 }
 
 func (s *BlockchainSource) Update() error {
-	resp, err := http.Get("https://api.coindesk.com/v1/bpi/currentprice.json")
+	resp, err := http.Get("https://blockchain.info/ticker")
 	if err != nil {
-		return fmt.Errorf("Failed to fetch from coindesk: %v", err)
+		return fmt.Errorf("Failed to fetch from blockchain: %v", err)
 	}
 
 	src := BlockchainSource{}
