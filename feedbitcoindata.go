@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"sync"
+	"time"
+)
 
 func FeedBitcoinData(data *Data, quit chan string) {
 	sources := GetBitcoinSources()
@@ -10,15 +13,23 @@ func FeedBitcoinData(data *Data, quit chan string) {
 		var eur, usd float64 = 0, 0
 		active := 0
 
+		var wg sync.WaitGroup
+
 		for _, source := range sources {
-			err := source.Update()
-			if err != nil {
-				continue
-			}
-			active++
-			eur += source.GetEUR()
-			usd += source.GetUSD()
+			wg.Add(1)
+			go func(src BitcoinDataSource) {
+				err := src.Update()
+				if err != nil {
+					return
+				}
+				active++
+				eur += src.GetEUR()
+				usd += src.GetUSD()
+				wg.Done()
+			}(source)
 		}
+
+		wg.Wait()
 
 		if active == 0 {
 			quit <- "No bitcoin feeds are active!"

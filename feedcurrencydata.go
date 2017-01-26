@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"sync"
+	"time"
+)
 
 func FeedCurrencyData(data *Data, quit chan string) {
 	sources := GetCurrencySources()
@@ -10,14 +13,22 @@ func FeedCurrencyData(data *Data, quit chan string) {
 		var eurusd float64
 		active := 0
 
+		var wg sync.WaitGroup
+
 		for _, source := range sources {
-			err := source.Update()
-			if err != nil {
-				continue
-			}
-			active++
-			eurusd += source.GetEURUSD()
+			wg.Add(1)
+			go func(src CurrencyDataSource) {
+				err := src.Update()
+				if err != nil {
+					return
+				}
+				active++
+				eurusd += src.GetEURUSD()
+				wg.Done()
+			}(source)
 		}
+
+		wg.Wait()
 
 		if active == 0 {
 			quit <- "No currency feeds are active!"
