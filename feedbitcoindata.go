@@ -20,6 +20,7 @@ func FeedBitcoinData(data *Data, quit chan string) {
 			go func(src BitcoinDataSource) {
 				err := src.Update()
 				if err != nil {
+					wg.Done()
 					return
 				}
 				active++
