@@ -12,11 +12,11 @@ type Data struct {
 
 func NewData() *Data {
 	data := &Data{
-		btcUSD:    make(chan float64),
-		btcEUR:    make(chan float64),
-		eurUSD:    make(chan float64),
-		activeBTC: make(chan int),
-		activeCUR: make(chan int),
+		btcUSD:    make(chan float64, 100),
+		btcEUR:    make(chan float64, 100),
+		eurUSD:    make(chan float64, 100),
+		activeBTC: make(chan int, 100),
+		activeCUR: make(chan int, 100),
 	}
 	return data
 }
