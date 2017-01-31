@@ -1,8 +1,11 @@
 
-BITCOIN TICKER
+# BITCOIN TICKER
 
-There are two types of sources:
+The ticker updates data from all its sources every 10 seconds, reports the fastest source to respond.
 
+### There are two types of sources:
+
+```
 type BitcoinDataSource interface {
 
 	GetUSD() float64 // BTC to USD
@@ -20,11 +23,13 @@ type CurrencyDataSource interface {
 	Update() error // update values
 
 }
+```
 
-To add a source, simply implement one of the interface
+
+To add a source, implement one of the interface
 
 
-Currently these sources are added:
+### Currently these sources are added:
 
 Bitcoin:
 
@@ -36,6 +41,3 @@ https://blockchain.info/ticker
 Currency:
 
 http://api.fixer.io/latest
-
-
-The ticker updates data from all its sources every 10 seconds, and calculates the average from all the available sources.
