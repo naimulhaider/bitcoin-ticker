@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func FeedCurrencyData(data *Data, quit chan string) {
+func FeedCurrencyData(data *Data) {
 
 	sources := GetCurrencySources()
 	data.totalCUR = len(sources)

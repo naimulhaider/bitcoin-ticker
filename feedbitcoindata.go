@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func FeedBitcoinData(data *Data, quit chan string) {
+func FeedBitcoinData(data *Data) {
 
 	sources := GetBitcoinSources()
 	data.totalBTC = len(sources)

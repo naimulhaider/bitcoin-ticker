@@ -20,7 +20,7 @@ func ClearTerminal() {
 	}
 }
 
-func Printer(data *Data, quit chan string) {
+func Printer(data *Data) {
 	var btcUSD, btcEUR, eurUSD float64 = 0, 0, 0
 	var activeBTC, activeCUR int = 0, 0
 
@@ -47,9 +47,6 @@ func Printer(data *Data, quit chan string) {
 			printTicker()
 		case activeCUR = <-data.activeCUR:
 			printTicker()
-		case msg := <-quit:
-			fmt.Printf("\n%v", msg)
-			return
 		}
 	}
 
