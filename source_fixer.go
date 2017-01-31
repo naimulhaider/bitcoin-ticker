@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type FixerSource struct {
@@ -17,7 +18,13 @@ func (s *FixerSource) GetEURUSD() float64 {
 }
 
 func (s *FixerSource) Update() error {
-	resp, err := http.Get("http://api.fixer.io/latest")
+
+	timeout := time.Duration(IntervalConfig-1) * time.Second
+	client := http.Client{
+		Timeout: timeout,
+	}
+
+	resp, err := client.Get("http://api.fixer.io/latest")
 	if err != nil {
 		return fmt.Errorf("Failed to fetch from coindesk: %v", err)
 	}

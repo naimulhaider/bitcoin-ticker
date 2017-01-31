@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type BlockchainSource struct {
@@ -24,7 +25,13 @@ func (s *BlockchainSource) GetEUR() float64 {
 }
 
 func (s *BlockchainSource) Update() error {
-	resp, err := http.Get("https://blockchain.info/ticker")
+
+	timeout := time.Duration(IntervalConfig-1) * time.Second
+	client := http.Client{
+		Timeout: timeout,
+	}
+
+	resp, err := client.Get("https://blockchain.info/ticker")
 	if err != nil {
 		return fmt.Errorf("Failed to fetch from blockchain: %v", err)
 	}

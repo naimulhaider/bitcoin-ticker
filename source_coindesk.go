@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type CoindeskSource struct {
@@ -26,7 +27,13 @@ func (s *CoindeskSource) GetEUR() float64 {
 }
 
 func (s *CoindeskSource) Update() error {
-	resp, err := http.Get("https://api.coindesk.com/v1/bpi/currentprice.json")
+
+	timeout := time.Duration(IntervalConfig-1) * time.Second
+	client := http.Client{
+		Timeout: timeout,
+	}
+
+	resp, err := client.Get("https://api.coindesk.com/v1/bpi/currentprice.json")
 	if err != nil {
 		return fmt.Errorf("Failed to fetch from coindesk: %v", err)
 	}
