@@ -33,8 +33,6 @@ func Printer(data *Data) {
 		)
 	}
 
-	printTicker()
-
 	for {
 		select {
 		case btcUSD = <-data.btcUSD:
