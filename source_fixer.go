@@ -12,7 +12,7 @@ type FixerSource struct {
 	} `json:"rates"`
 }
 
-func (s FixerSource) GetEURUSD() float64 {
+func (s *FixerSource) GetEURUSD() float64 {
 	return s.Rates.USD
 }
 

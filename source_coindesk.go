@@ -17,11 +17,11 @@ type CoindeskSource struct {
 	} `json:"bpi"`
 }
 
-func (s CoindeskSource) GetUSD() float64 {
+func (s *CoindeskSource) GetUSD() float64 {
 	return s.Bpi.USD.RateFloat
 }
 
-func (s CoindeskSource) GetEUR() float64 {
+func (s *CoindeskSource) GetEUR() float64 {
 	return s.Bpi.EUR.RateFloat
 }
 

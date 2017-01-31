@@ -15,11 +15,11 @@ type BlockchainSource struct {
 	} `json:"EUR"`
 }
 
-func (s BlockchainSource) GetUSD() float64 {
+func (s *BlockchainSource) GetUSD() float64 {
 	return s.USD.Last
 }
 
-func (s BlockchainSource) GetEUR() float64 {
+func (s *BlockchainSource) GetEUR() float64 {
 	return s.EUR.Last
 }
 
