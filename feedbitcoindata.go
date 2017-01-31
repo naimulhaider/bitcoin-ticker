@@ -1,46 +1,71 @@
 package main
 
 import (
-	"sync"
+	"fmt"
+	"log"
 	"time"
 )
 
 func FeedBitcoinData(data *Data, quit chan string) {
+
 	sources := GetBitcoinSources()
 	data.totalBTC = len(sources)
 
-	for {
-		var eur, usd float64 = 0, 0
-		active := 0
-
-		var wg sync.WaitGroup
-
-		for _, source := range sources {
-			wg.Add(1)
-			go func(src BitcoinDataSource) {
-				err := src.Update()
-				if err != nil {
-					wg.Done()
-					return
-				}
-				active++
-				eur += src.GetEUR()
-				usd += src.GetUSD()
-				wg.Done()
-			}(source)
-		}
-
-		wg.Wait()
-
-		if active == 0 {
-			quit <- "No bitcoin feeds are active!"
+	fetchData := func(source BitcoinDataSource, pipe chan BitcoinDataSource) {
+		err := source.Update()
+		if err != nil {
+			log.Println(fmt.Errorf("Failed to fetch data, err: %v", err))
 			return
 		}
+		pipe <- source
+	}
 
-		data.btcEUR <- eur / float64(active)
-		data.btcUSD <- usd / float64(active)
-		data.activeBTC <- active
+	updateData := func() {
 
+		pipe := make(chan BitcoinDataSource, len(sources))
+
+		foundOne := false
+
+		for _, source := range sources {
+			go fetchData(source, pipe)
+		}
+
+		responsiveSources := 0
+
+		timeout := time.After(time.Duration(IntervalConfig-1) * time.Second)
+
+		for {
+			doneListening := false
+			select {
+			case src := <-pipe:
+				if foundOne == false { // this is the quickest response
+					data.btcEUR <- src.GetEUR()
+					data.btcUSD <- src.GetUSD()
+					foundOne = true
+				}
+				responsiveSources++
+				if responsiveSources == len(sources) {
+					doneListening = true // all of the sources responded
+					break
+				}
+			case <-timeout:
+				// timed out
+				doneListening = true
+				break
+			}
+
+			if doneListening {
+				close(pipe)
+				break
+			}
+		}
+
+		data.activeBTC <- responsiveSources
+		return
+	}
+
+	for {
+		go updateData()
 		time.Sleep(time.Duration(IntervalConfig) * time.Second)
 	}
 

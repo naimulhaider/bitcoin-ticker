@@ -3,7 +3,7 @@ package main
 func main() {
 
 	data := NewData()
-	quit := make(chan string)
+	quit := make(chan string, 1)
 
 	// go DataSimulator(data, quit)
 
