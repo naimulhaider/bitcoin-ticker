@@ -21,6 +21,7 @@ func (s *FixerSource) Update() error {
 	if err != nil {
 		return fmt.Errorf("Failed to fetch from coindesk: %v", err)
 	}
+	defer resp.Body.Close()
 
 	src := FixerSource{}
 	err = json.NewDecoder(resp.Body).Decode(&src)

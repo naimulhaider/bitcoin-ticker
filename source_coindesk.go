@@ -30,6 +30,7 @@ func (s *CoindeskSource) Update() error {
 	if err != nil {
 		return fmt.Errorf("Failed to fetch from coindesk: %v", err)
 	}
+	defer resp.Body.Close()
 
 	src := CoindeskSource{}
 	err = json.NewDecoder(resp.Body).Decode(&src)

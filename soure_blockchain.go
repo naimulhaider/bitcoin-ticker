@@ -28,6 +28,7 @@ func (s *BlockchainSource) Update() error {
 	if err != nil {
 		return fmt.Errorf("Failed to fetch from blockchain: %v", err)
 	}
+	defer resp.Body.Close()
 
 	src := BlockchainSource{}
 	err = json.NewDecoder(resp.Body).Decode(&src)
